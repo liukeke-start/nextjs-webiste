@@ -1,13 +1,19 @@
-.container {
-  @apply mx-auto flex max-w-[1200px] flex-col;
-  // min-height: 100vh;
-  padding: 0 0.5rem;
+
+@font-face {
+  font-family: 'akzidenz-medium';
+  src: url('/fonts/AkzidenzGrotesk-Medium.otf');
 }
 
-.main {
-  @apply flex flex-col;
-  padding: 2rem 0;
-  flex: 1;
-  justify-content: center;
-  align-items: center;
+@keyframes checkRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes floatAnimation {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-20px);
+  }
 }

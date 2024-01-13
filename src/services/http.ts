@@ -1,47 +1,27 @@
 import axios, { Axios } from 'axios'
-import { Api } from './api'
-import { getToken } from '../utils/token'
-// import { PAGE_SIZE } from 'constants/constant'
-import { encode } from 'js-base64'
-import { config } from 'process'
-
-let hasToken = false
+import { API_BASE_URL } from '../constants/setting'
+import { data } from 'autoprefixer'
+import { useBtc } from 'connection/btcconnector/context'
 let client = refreshClient()
 
 function refreshClient(): Axios {
   return axios.create({
-    url: Api.baseUrl,
     timeout: 15000,
-    headers: {
-      AccessToken: getToken('access_token'),
-      AcceptLanguage: 'zh',
-    },
   })
 }
 
-// check token
-function checkToken() {
-  let token = getToken('access_token')
-  if (token) {
-    client = refreshClient()
-    hasToken = true
-  }
-}
-
-function _post(url: string, param: any, config: any = null) {
-  if (!hasToken) {
-    checkToken()
-  }
+function _get(url: string) {
   return new Promise(function (resolve, reject) {
-    let data = {
-      params: param,
-      internal_url: url,
-    }
     client
-      .post('/api/proxy/', data, config)
+      .get(`${API_BASE_URL}/${url}`)
       .then(response => {
         if (response.status === 200) {
-          resolve(response.data)
+          let res = response.data
+          if (res.code == "0") {
+            resolve(res.data)
+          } else {
+            console.error(res.msg);
+          }
         } else {
           reject(response.statusText)
         }
@@ -53,17 +33,19 @@ function _post(url: string, param: any, config: any = null) {
   })
 }
 
-function _get(url) {
-  if (!hasToken) {
-    checkToken()
-  }
+
+function _post(url: string, params: object) {
   return new Promise(function (resolve, reject) {
-    const getUrl = `/api/proxy/?path=${encode(url)}`
     client
-      .get(getUrl)
+      .post(`${API_BASE_URL}/${url}`, params)
       .then(response => {
         if (response.status === 200) {
-          resolve(response.data)
+          let res = response.data
+          if (res.error_code == 1) {
+            resolve(res.result)
+          } else {
+            console.error(res.error_message);
+          }
         } else {
           reject(response.statusText)
         }
@@ -85,37 +67,39 @@ class Http {
     return httpInstance
   }
 
-  // get verify code
-  requestVerifyCode(email: string): Promise<any> {
-    let params = {
-      email: email,
+  requestLogin(address: string){
+    var params = {
+      "address": address
     }
-    return _post(Api.emailCode, params)
+    return _post(`login/`, params)
   }
 
-  // login
-  login(email: string, code: string) {
-    let params = {
-      email: email,
-      code: code,
+  requestRoundInfo(){
+    return _post(`round/info/`,{})
+  }
+
+  requestSubmitInviteCode(inviteAddress: string, myAddress: string) {
+    var params = {
+      "invite_code": inviteAddress,
+      "address": myAddress
     }
-    return _post(Api.login, params)
+    return _post(`submit/invite/code/`, params)
   }
 
-  export(params) {
-    return _post(Api.export, params, {
-      responseType: 'arraybuffer',
-    })
+  requestRecordTransaction(userAddress: string, receiveAddress: string, txid: string, round: number, price: number) {
+    var params = {
+      "action": "buy",
+      "round": round,
+      "price": price,
+      "from_address": userAddress,
+      "receive_address": receiveAddress,
+      "btc_value": price,
+      "txid": txid
+    }
+    return _post(`user/record/transaction/`, params)
   }
-
-  // public
-  getOptions() {
-    return _get(Api.options)
-  }
-
-  getDetail(id) {
-    return _get(Api.bills + '/' + id + '/details')
-  }
+  
 }
+const http = new Http();
+export default http;
 
-export default Http

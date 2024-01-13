@@ -7,6 +7,9 @@ Other tools included: Autoprefixer, Sass, PostCSS, ESLint, Prettier.
 ## Getting Started
 
 ```bash
+
+# node 版本 v18.17.0+
+
 # Install Dependencies
 yarn
 
