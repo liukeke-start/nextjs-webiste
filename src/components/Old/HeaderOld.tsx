@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Dialog, Transition } from '@headlessui/react'
-// import { useBtc } from 'connection/btcconnector/context'
-import ConnectWallet from 'components/ConnectWallet'
+import { useBtc } from 'connection/btcconnector/context'
+import ConnectWallet from 'components/ConnectWallet11'
 
 
 const navList = [
@@ -54,7 +54,7 @@ const LinkTwitterList = [
 export default function Header() {
 
   const [mobileHeaderOpen, setMobileHeaderOpen] = useState(false)
-  // const { isConnected, address, publicKey, network, connect } = useBtc()
+  const { isConnected, address, publicKey, network, connect } = useBtc()
   const [isInvitation, setIsInvitation] = useState(false);
 
   const [isWalletOpen, setWalletOpen] = useState(false);
@@ -104,15 +104,28 @@ export default function Header() {
               LinkTwitterList.map((item, index) => {
                 return (
                   <a key={index} href={item.href} rel='noopener noreferrer' target='_blank'>
-                    <img className='img1' src={item.icon} alt="" />
-                    <img className='img2' src={item.iconH5} alt="" />
+                    <img className='img1' src={item.icon} alt=""/>
+                    <img className='img2' src={item.iconH5} alt=""/>
                   </a>
                 )
               })
             }
           </div>
         </div>
-        <ConnectWallet />
+        {!isConnected && (<>
+          <div className='wallet'>
+            <button
+              onClick={handWalletOpen}
+            >CONNECT</button>
+          </div>
+          <ConnectWallet
+            isWalletOpen={isWalletOpen}
+            handWalletChange={handWalletChange}
+            onInvitationChange={handleInvitationChange}
+          />
+        </>
+        )}
+        {isConnected && <Connected address={address} />}
         <div className='mobile-btn'
           onClick={() => setMobileHeaderOpen(true)}
         >
@@ -168,7 +181,7 @@ export default function Header() {
                       className="flex items-center justify-center bg-black bg-opacity-0 focus:outline-none dark:bg-opacity-0"
                       onClick={() => setMobileHeaderOpen(false)}
                     >
-                      <img src="/assets/image/icon_close.png" alt="" />
+                      <img  src="/assets/image/icon_close.png" alt="" />
                     </button>
                   </div>
                 </Transition.Child>
@@ -194,7 +207,7 @@ export default function Header() {
                               return (
                                 <a key={index} href={item.href} rel='noopener noreferrer' target='_blank'>
                                   <img className='img2' src={item.icon} alt="" />
-                                  <img className='img1' src={item.iconH5} alt="" />
+                                  <img className='img1' src={item.iconH5} alt=""/>
                                 </a>
                               )
                             })
@@ -223,6 +236,7 @@ const Connected = (props) => {
   )
 }
 
+
 function newAddress(oldAddress) {
   let displayAddress
   if (oldAddress) {
@@ -230,8 +244,5 @@ function newAddress(oldAddress) {
   }
   return displayAddress
 }
-
-
-
 
 

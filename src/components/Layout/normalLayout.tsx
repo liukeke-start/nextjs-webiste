@@ -1,3 +1,10 @@
+/*
+ * @Author:  
+ * @Date: 2024-05-15 22:19:18
+ * @LastEditors:  
+ * @LastEditTime: 2025-05-02 09:16:05
+ * @FilePath: /nextjs-webiste/src/components/Layout/normalLayout.tsx
+ */
 
 import React from 'react'
 import Head from 'next/head'
