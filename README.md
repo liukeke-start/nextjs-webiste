@@ -1,3 +1,10 @@
+<!--
+ * @Author:  
+ * @Date: 2024-05-15 22:19:18
+ * @LastEditors:  
+ * @LastEditTime: 2025-05-02 08:57:15
+ * @FilePath: /nextjs-webiste/README.md
+-->
 # Next.JS Starter Boilerplate
 
 A Next.js starter kit template with Next.js 12 + React 17 + Typescript + Tailwind CSS 3 + Heroicons + Headless UI.
@@ -64,4 +71,14 @@ revert:
 build: 
 ci
 
+```
+
+
+## How to generate the translation file
+```bash
+yarn global add i18next-parser
+```
+
+```
+sh compile.sh
 ```
